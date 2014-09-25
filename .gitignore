@@ -1,2 +1,5 @@
 openssl.conf
 config.json
+ssl/*.key
+ssl/*.csr
+ssl/*.pem
