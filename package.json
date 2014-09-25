@@ -1,0 +1,22 @@
+{
+  "name": "qb-backup",
+  "version": "0.0.0",
+  "description": "creates a backup for you",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/insanity54/qb-backup.git"
+  },
+  "keywords": [
+    "quickbooks",
+    "backup"
+  ],
+  "author": "Chris Grimmett <chris@grimtech.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/insanity54/qb-backup/issues"
+  }
+}
