@@ -53,4 +53,19 @@ fi
 echo $(passBox ssl-cert.pem 0);
 
 
+# check config file exists
+if [[ ! -e "$bindir/config.json" ]]; then
+    echo $(passBox config.json 1);
+    echo 'config.json does not exist, generating...'
+    "$bindir/configsetup.sh"
+
+    # ensure config file generated successfully
+    if [[ $? -ne 0 ]]; then
+	echo $(passBox config.json 1);
+	echo 'config.json not generated successfully. plz try again or open issue on github https://github.com/insanity54/qb-backup/issues'
+	exit 1
+    fi
+fi
+
+    
 node ./app.js
