@@ -7,20 +7,43 @@ var OAuth2 = require('oauth').OAuth2;
 var rest = require('restler');
 var schedule = require('node-schedule');
 var mailer = require('mailer');
-
+var smtpTransport = require('nodemailer-smtp-transport');
 
 //
 // ENV
 //
 nconf.file({file: 'config.json'});
 nconf.defaults({
-    'PORT': '8888'
+    'PORT': '38999'
 });
 
 var port = nconf.get('PORT');
 var backpack = nconf.get('BACKPACKURL');
-var transporter = nodemailer.createTransport({
-    service: 
+var emailServer = nconf.get('EMAILSERVER');
+var emailSSL = nconf.get('EMAILSSL');
+var emailUsername = nconf.get('EMAILUSERNAME');
+var emailPassword = nconf.get('EMAILPASSWORD');
+var emailTo = nconf.get('EMAILTO');
+var emailFrom = nconf.get('EMAILFROM');
+var emailSubject = nconf.get('EMAILSUBJECT');
+
+// e-mail alert configuration
+// this is all pulled from the app config file, config.json (via nconf)
+var emailOptions = {
+    host: emailServer,
+    secure: emailSSL,
+    auth: {
+	user: emailUsername,
+	pass: emailPassword,
+    }
+};
+var transporter = nodemailer.createTransport(smtpTransport(emailOptions));
+transporter.sendMail({
+    from: emailFrom,
+    to: emailTo,
+    subject: emailSubject,
+    text: 'software aleeert of some kind ktnxbai'
+});
 
 //
 // FUNKIES
