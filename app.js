@@ -8,6 +8,8 @@ var rest = require('restler');
 var schedule = require('node-schedule');
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
+var SambaClient = require('samba-client');
+
 
 //
 // ENV
@@ -27,6 +29,10 @@ var emailPassword = nconf.get('EMAILPASSWORD');
 var emailTo = nconf.get('EMAILTO');
 var emailFrom = nconf.get('EMAILFROM');
 var emailSubject = nconf.get('EMAILSUBJECT');
+var smbServer = nconf.get('SMBSERVER');
+var smbUser = nconf.get('SMBUSER');
+var smbPass = nconf.get('SMBPASS');
+
 
 // e-mail alert configuration
 // this is all pulled from the app config file, config.json (via nconf)
@@ -70,37 +76,67 @@ var daily = schedule.scheduleJob('0 8 * * 1-5', function() {
 });
 
 // testing every minute of every weekday
+var count = 0;
 var minutely = schedule.scheduleJob('* * * * 1-5', function() {
     console.log('checking backpack reminders (test)');
 
-    
     checkReminders(function(err, reply) {
 	if (err) return sendError(err);
-	
+
+	// see if qb backup is scheduled today
 	compareTime(reply, function(err, match) {
 	    if (err) return sendError(err);
-	    console.log('time is compared success');
-	});
+	    if (!match) return console.log('no quickbooks backup scheduled today');
 
+	    // qb backup is scheduled today
+	    backupQB(function(err, status) {
+		if (err) return sendError(err);
+		console.log('backup status is ' + status.code);
+	    });
+	});
     });
 });
 
+var backupQB = function backupQB(callback) {
+    console.log('backup');
+    var smb = new SambaClient({
+	address: smbServer,
+	username: smbUser,
+	password: smbPass
+    });
+};
+
+
+// calls back (null, true) if quickbooks backup reminder is today
 var compareTime = function compareTime(reply, callback) {
 
-    // get reminders
-    console.log('reminders: ');
-    console.dir(reply.reminders);
-    var reminders = reply.reminders.reminder;
-    
     // get today's date
     var date = new Date();
     var today = date.toISOString();
     today = today.substring(0, today.indexOf('T'));
     console.log('today: ' + today);
 
-    // if any of today's reminders mention "quickbooks backup", return true
-    if () {
-	
+    // get reminders
+    var reminders = reply.reminders.reminder;
+    console.log(reminders);
+
+    // go through each reminder and see if it is today
+    for (var i = 0; i < Object.keys(reminders).length; i ++) {
+
+	// if any of today's reminders mention "quickbooks backup", return true
+	var remindAt = reminders[i].remind_at.toString().split(' ')[0];
+	console.log('comparing ' + remindAt + ' and ' + today);
+
+	if (remindAt == today) {
+	    console.log('reminder today');
+
+	    var content = reminders[i].content;
+	    if (content.indexOf('quickbooks') && content.indexOf('backup')) return callback(null, true);
+				
+   	} else {
+	    // reminder is not today
+	    return callback(null, false);
+	}
     }
 };
     

@@ -9,6 +9,8 @@ portdefault=29834
 scheddefault='0 8 * * 1-5'
 emailssldefault='false'
 emailsubjectdefault='qb-backup software alert'
+smbuserdefault='guest'
+smbpassdefault='guest'
 
 # get some input
 read -p "Enter your backpack URL in the format https://companyname.backpackit.com: " url
@@ -23,10 +25,17 @@ read -p "Enter the SMTP password for $emailfrom: " emailpass
 read -p "Enter the email address to send admin alerts from: " emailfrom
 read -p "Enter the email address to send admin alerts to: " emailto
 read -p "Enter the email subject the alert will contain, or leave blank for default: " emailsubject
+echo "SAMBA server setup"
+read -p "Enter the smb address for your samba server where QB backups are stored (ex: //server): " smbserver
+read -p "Enter the smb username [guest]: " smbuser
+read -p "Enter the smb password [guest]: " smbpass
+
 port=${port:-$portdefault}                            # if nothing entered for port, set our default
 runsched=${runsched:-$scheddefault}                   # if nothing entered for port, set our default
 emailssl=${emailssl:-$emailssldefault}                # if nothing entered for ssl, set to default
 emailsubject=${emailsubject:-$emailsubjectdefault}    # if nothing entered for email subject, set to defaultpp
+smbuser=${smbuser:-$smbuserdefault}
+smbpass=${smbpass:-$smbpassdefault}
 
 # @todo next time we do this, just do it all in JS!
 #       that way, we get JSON parsing built in

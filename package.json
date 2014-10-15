@@ -29,6 +29,7 @@
     "node-schedule": "~0.1.13",
     "nodemailer": "~1.3.0",
     "nodemailer-smtp-transport": "~0.1.13",
-    "xml2js": "~0.4.4"
+    "xml2js": "~0.4.4",
+    "samba-client": "~1.3.0"
   }
 }
