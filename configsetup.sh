@@ -12,6 +12,7 @@ emailsubjectdefault='qb-backup software alert'
 
 # get some input
 read -p "Enter your backpack URL in the format https://companyname.backpackit.com: " url
+read -P "Enter your backack Authentication token (obtained from the \"My Info\" page on Backpack): " token
 read -p "Enter the (cron style) schedule defining how often to run (default is every weekday @ 8AM) [$scheddefault]: " runsched
 read -p "Enter the port number you want the node server to run on [29834]: " port
 echo "SMTP email alert setup"
@@ -33,6 +34,7 @@ emailsubject=${emailsubject:-$emailsubjectdefault}    # if nothing entered for e
 echo -e \
 "{
   \"BACKPACKURL\"  : \"$url\",
+  \"BACKPACKTOKEN\": \"$token\",
   \"RUNSCHED\"     : \"$runsched\",
   \"PORT\"         : \"$port\",
   \"EMAILFROM\"    : \"$emailfrom\",
