@@ -1,6 +1,8 @@
 QB-Backup
 ===
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/insanity54/qb-backup.svg)](https://greenkeeper.io/)
+
 What it do
 ---
 
